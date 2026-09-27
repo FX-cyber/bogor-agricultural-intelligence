@@ -1,0 +1,11 @@
+export type Filters = Record<string, string>;
+export type Source = {source_url?: string|null; source: string; source_table_id: string; source_table_title: string; year: number; last_synced: string; last_updated: string};
+export type Rank = {name: string; value: number};
+export type Status = {api_connected: boolean; api_key_configured: boolean; bogor_domain_verified: boolean; simdasi_connected: boolean; domain: string; wilayah: string; data_source: string|null; last_sync: string|null; using_cache: boolean; stale: boolean; refreshing: boolean; error: string|null; quality: Record<string, number|number[]>; discovery_errors: string[]; tables_discovered: number; tables_selected: number};
+export type Options = {year: number[]; district: string[]; commodity: string[]; category: string[]; unit: string[]; indicator: string[]; defaults: {year?: number; unit?: string}};
+export type Summary = {year: number; unit: string|null; total: number|null; yoy: {change_percent: number|null; matched_observations: number; current: number|null; previous: number|null}; active_commodities: number; district_count: number; observations: number; missing: number; top_commodities: Rank[]; top_districts: Rank[]; provenance: Source[]; message: string|null};
+export type Insight = {type: string; severity: string; title: string; message: string; evidence: Record<string, unknown>; priority: number; provenance: Source[]};
+export type Cluster = {available: boolean; message?: string; eligible_districts?: number; k?: number; silhouette?: number; unit: string; features?: string[]; method?: string; points?: {district: string; cluster: number; total_production: number; active_commodities: number}[]; clusters?: {id: number; name: string; description: string; districts: string[]; centroid: Record<string, number|null>}[]};
+export type Dashboard = {summary: Summary; trends: {series: {year: number; value: number|null}[]; unit: string; note: string}; clusters: Cluster; insights: Insight[]};
+export type TableSource = {source_url?: string|null; id: string; title: string; source: string; domain: string; years: number[]; ingested_years: number[]; units: string[]; last_sync: string};
+export type Observation = Source & {district: string; district_code: string; commodity: string; category: string; indicator: string; value: number|null; unit: string|null};

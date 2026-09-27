@@ -1,0 +1,185 @@
+{
+  "description": "Sanitized excerpt of an actual BPS response retrieved 2026-09-27; first district and aggregate, two source columns. Not a demo dataset.",
+  "fetched_at": "2026-09-27T11:15:08.170223+00:00",
+  "response": {
+    "status": "OK",
+    "data-availability": "available",
+    "data": [
+      {
+        "page": 1,
+        "pages": 1,
+        "per_page": 1,
+        "count": 1,
+        "total": 1
+      },
+      {
+        "change_log": [],
+        "judul_tabel": "Produksi Tanaman Buah-buahan dan Sayuran Tahunan Menurut Kecamatan dan Jenis Tanaman di Kabupaten Bogor, 2025",
+        "judul_tabel_en": "Production of Permanent Fruit and Vegetable Crops by District and Type of Crops in Bogor Regency, 2025",
+        "lingkup": "Kecamatan&lt;br&gt;&lt;i&gt;District&lt;/i&gt;",
+        "lingkup_id": "Kecamatan",
+        "lingkup_en": "District",
+        "tahun_data": 2025,
+        "wilayah": "Bogor",
+        "penanggung_jawab": "BPS Kabupaten Bogor",
+        "show_satuan": false,
+        "id_subject": "ODhyTDFMb0FKalliamIyUUd3ci9ZUT09",
+        "bab": "Pertanian, Kehutanan, Peternakan, dan Perikanan",
+        "bab_en": "Agriculture, Forestry, Livestock, and Fishery",
+        "subject": "Hortikultura",
+        "subject_en": "Horticulture",
+        "mms_id": 557,
+        "mms_subject": "Hortikultura, Perkebunan, Peternakan",
+        "keterangan_data": {
+          "...": "Data tidak tersedia",
+          "–": "Tidak ada atau nol",
+          "NA": "Data tidak dapat ditampilkan",
+          "e": "Angka estimasi",
+          "r": "Angka diperbaiki",
+          "~0": "Data dapat diabaikan",
+          "*": "Angka sementara",
+          "**": "Angka sangat sementara",
+          "***": "Angka sangat sangat sementara",
+          "a": "25% &#60; RSE &#8804; 50%",
+          "b": "RSE &#60; 50%",
+          "c": "Penjumlahan tidak sama dengan wilayah diatasnya"
+        },
+        "kolom": {
+          "a4ohocjb22": {
+            "nama_variabel": "Produksi Alpukat (kuintal)",
+            "nama_variabel_en": "Production of Avocado (quintal)",
+            "tipe": "Numerik",
+            "angka_desimal_dibelakang_koma": 2,
+            "satuan": "kw",
+            "satuan_en": "qui",
+            "metadata_indikator": null,
+            "metadata_konsep_definisi": null,
+            "metadata_kegunaan": null,
+            "metadata_keterangan_tambahan": null,
+            "metadata_interpretasi": null,
+            "metadata_rumusan": [],
+            "metadata_rumus_html": null,
+            "metadata_dihasilkan_oleh": [],
+            "tanggal_cut_off": null
+          },
+          "npu3vlqhuz": {
+            "nama_variabel": "Produksi Anggur (kuintal)",
+            "nama_variabel_en": "Production of Grape (quintal)",
+            "tipe": "Numerik",
+            "angka_desimal_dibelakang_koma": 2,
+            "satuan": "kw",
+            "satuan_en": "qui",
+            "metadata_indikator": null,
+            "metadata_konsep_definisi": null,
+            "metadata_kegunaan": null,
+            "metadata_keterangan_tambahan": null,
+            "metadata_interpretasi": null,
+            "metadata_rumusan": [],
+            "metadata_rumus_html": null,
+            "metadata_dihasilkan_oleh": [],
+            "tanggal_cut_off": null
+          }
+        },
+        "data": [
+          {
+            "label": "Nanggung",
+            "label_raw": "Nanggung",
+            "satuan": null,
+            "kode_wilayah": 3201010,
+            "variables": {
+              "a4ohocjb22": {
+                "value": "7.278,00",
+                "value_raw": "7.278,00",
+                "value_code": null
+              },
+              "npu3vlqhuz": {
+                "value": "-",
+                "value_raw": null,
+                "value_code": null
+              }
+            }
+          },
+          {
+            "label": "Bogor",
+            "label_raw": "Bogor",
+            "satuan": null,
+            "kode_wilayah": 3201000,
+            "variables": {
+              "a4ohocjb22": {
+                "value": "54.099,04",
+                "value_raw": "54.099,04",
+                "value_code": null
+              },
+              "npu3vlqhuz": {
+                "value": "81,30",
+                "value_raw": "81,30",
+                "value_code": null
+              }
+            }
+          }
+        ],
+        "catatan": "",
+        "sumber": "&lt;p&gt;Badan Pusat Statistik-Kementerian Pertanian (Direktorat Jenderal Hortikultura)/&lt;i&gt;BPS-Statistics Indonesia-Ministry of Agriculture (Directorate General of Horticulture)&lt;/i&gt;&lt;/p&gt;",
+        "versi": 1,
+        "table_created": "2026-05-25 15:04:36",
+        "status": 200,
+        "condition": "OK",
+        "message": "-",
+        "created": "2026-09-27 18:15:36"
+      }
+    ]
+  },
+  "table": {
+    "id": "SGJsZ0s5RjRyTWN1eDNyUERzbTI0Zz09",
+    "title": "Produksi Tanaman Buah-buahan dan Sayuran Tahunan Menurut Kecamatan dan Jenis Tanaman di Kabupaten Bogor",
+    "source": "SIMDASI",
+    "domain": "3201",
+    "score": 32,
+    "years": [
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "metadata": {
+      "id_tabel": "SGJsZ0s5RjRyTWN1eDNyUERzbTI0Zz09",
+      "judul": "Produksi Tanaman Buah-buahan dan Sayuran Tahunan Menurut Kecamatan dan Jenis Tanaman di Kabupaten Bogor",
+      "judul_en": "Production of Permanent Fruit and Vegetable Crops by District and Type of Crops in Bogor Regency",
+      "kode_tabel": "5.1.13",
+      "ketersediaan_tahun": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "latest_update": "2026-05-25 15:04:36",
+      "id_subject": "ODhyTDFMb0FKalliamIyUUd3ci9ZUT09",
+      "bab": "Pertanian, Kehutanan, Peternakan, dan Perikanan",
+      "bab_en": "Agriculture, Forestry, Livestock, and Fishery",
+      "subject": "Hortikultura",
+      "subject_en": "Horticulture",
+      "mms_id": 557,
+      "mms_subject": "Hortikultura, Perkebunan, Peternakan"
+    },
+    "requires_bogor_row_filter": false,
+    "units": [
+      "kw"
+    ],
+    "ingested_years": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "last_sync": "2026-09-27T11:23:36.888703+00:00"
+  }
+}
