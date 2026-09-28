@@ -42,6 +42,12 @@ class APITests(unittest.TestCase):
     def test_refresh_origin(self):
         self.assertEqual(self.client.post('/api/bps/refresh',headers={'Origin':'https://example.com'}).status_code,403)
 
+    def test_public_deployment_blocks_refresh_even_without_origin(self):
+        with patch('app.main.PUBLIC_DEPLOYMENT', True), patch('app.main.asyncio.create_task') as task:
+            self.assertEqual(self.client.post('/api/bps/refresh').status_code, 403)
+            self.assertEqual(self.client.post('/api/bps/refresh', headers={'Origin':'http://localhost:3000'}).status_code, 403)
+            task.assert_not_called()
+
     def test_refresh_cooldown_never_starts_network(self):
         with patch('app.main.refresh_admitted_at', time.monotonic()), patch.object(pipeline, 'settings', Settings(api_key='test-secret')), patch('app.main.asyncio.create_task') as task:
             response = self.client.post('/api/bps/refresh')

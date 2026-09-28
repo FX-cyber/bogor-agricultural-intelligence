@@ -9,5 +9,8 @@ backend/data/cache/*
 !backend/data/cache/.gitkeep
 node_modules/
 .next/
+.next-pages/
+frontend/out/
+dist/
 *.tsbuildinfo
 .local/

@@ -1,4 +1,5 @@
 import asyncio
+import gzip
 import json
 from datetime import datetime, timezone
 from app.config import get_settings
@@ -12,6 +13,13 @@ from app.services.insight_engine import insights
 
 def now():
     return datetime.now(timezone.utc).isoformat()
+
+
+def read_dataset(path):
+    if path.suffix == '.gz':
+        with gzip.open(path, 'rt', encoding='utf-8') as handle:
+            return json.load(handle)
+    return json.loads(path.read_text(encoding='utf-8'))
 
 
 def calculate(rows, filters):
@@ -29,14 +37,20 @@ class Pipeline:
         self.last_attempt = None
         self.connected = False
         self.memo = {}
-        path = self.settings.cache / 'normalized.json'
-        if path.exists():
+        # The writable cache wins; the bundled gzip snapshot is a read-only floor
+        # for hosts with ephemeral disks, so production needs no BPS credentials.
+        for path in (self.settings.cache / 'normalized.json',
+                     self.settings.snapshot / 'normalized.json.gz'):
+            if not path.exists():
+                continue
             try:
-                value = json.loads(path.read_text(encoding='utf-8'))
-                if value.get('schema_version') == 1 and value.get('rows'):
-                    self.snapshot = value
+                value = read_dataset(path)
             except (OSError, ValueError):
                 self.last_error = 'Cached dataset could not be read. Run a refresh.'
+                continue
+            if value.get('schema_version') == 1 and value.get('rows'):
+                self.snapshot = value
+                break
 
     def status(self):
         snapshot = self.snapshot or {}

@@ -1,0 +1,12 @@
+*
+!Dockerfile
+!requirements.txt
+!app/
+!app/**
+!scripts/
+!scripts/**
+!data/snapshot/
+!data/snapshot/**
+**/__pycache__/
+**/*.pyc
+**/.env*

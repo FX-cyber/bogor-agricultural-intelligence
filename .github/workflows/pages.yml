@@ -1,0 +1,69 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_TARGET: github-pages
+      NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - run: pip install -r backend/requirements.txt
+      - name: Test backend without BPS credentials
+        working-directory: backend
+        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+        working-directory: frontend
+      - name: Export static frontend
+        working-directory: frontend
+        env:
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run build
+      - name: Verify exported routes
+        run: |
+          test -f frontend/.next-pages/index.html
+          test -f frontend/.next-pages/data/index.html
+          test -f frontend/.next-pages/sources/index.html
+          test -f frontend/.next-pages/diagnostics/index.html
+          test -f frontend/.next-pages/about/index.html
+          touch frontend/.next-pages/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: frontend/.next-pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

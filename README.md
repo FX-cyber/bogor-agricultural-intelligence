@@ -2,6 +2,10 @@
 
 **Data-driven agricultural intelligence for Kabupaten Bogor**
 
+**Deploy dari GitHub:** frontend sudah mendukung GitHub Pages melalui GitHub Actions;
+backend Python disiapkan sebagai Docker service terpisah. Ikuti
+[panduan deployment](docs/DEPLOY-GITHUB.md). GitHub Pages sendiri tidak menjalankan backend Python.
+
 ## 1. Project Overview
 
 A full-stack research dashboard that discovers official BPS tables, validates geography, normalizes agricultural observations, and explains patterns with statistics and exploratory machine learning.

@@ -14,6 +14,7 @@ class Settings:
     wilayah: str = '3201000'
     base_url: str = 'https://webapi.bps.go.id'
     cache: Path = ROOT / 'data' / 'cache'
+    snapshot: Path = ROOT / 'data' / 'snapshot'
 
     @property
     def configured(self):
@@ -35,6 +36,7 @@ def get_settings():
         domain=os.getenv('BPS_BOGOR_DOMAIN', '3201'),
         wilayah=os.getenv('BPS_BOGOR_SIMDASI_WILAYAH', '3201000'),
         base_url=os.getenv('BPS_API_BASE_URL', 'https://webapi.bps.go.id'),
+        cache=Path(os.getenv('BPS_CACHE_DIR', str(ROOT / 'data' / 'cache'))),
     )
     settings.validate()
     return settings

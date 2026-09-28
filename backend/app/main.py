@@ -3,6 +3,7 @@ import csv
 import io
 import math
 import time
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +16,9 @@ from app.services.attribution import NOTICE, source_url
 pipeline = Pipeline()
 refresh_admitted_at = None
 REFRESH_INTERVAL_SECONDS = 900
+PUBLIC_DEPLOYMENT = os.getenv('PUBLIC_DEPLOYMENT', 'false').lower() == 'true'
+ALLOWED_ORIGINS = [o.strip().rstrip('/') for o in os.getenv('ALLOWED_ORIGINS',
+    'http://localhost:3000,http://127.0.0.1:3000').split(',') if o.strip()]
 
 
 async def refresh_safely():
@@ -39,7 +43,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title='Bogor Agricultural Intelligence', description=NOTICE, lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=['http://localhost:3000', 'http://127.0.0.1:3000'],
+app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS,
                    allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
 
 
@@ -74,6 +78,9 @@ def tables():
 @app.post('/api/bps/refresh', status_code=202)
 async def refresh(request: Request):
     global refresh_admitted_at
+    # Origin is not authentication. Public visitors cannot trigger BPS traffic.
+    if PUBLIC_DEPLOYMENT:
+        raise HTTPException(403, 'Public deployment is read-only. Synchronization is managed by the operator.')
     origin = request.headers.get('origin')
     if origin and origin not in ('http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:8000', 'http://127.0.0.1:8000'):
         raise HTTPException(403, 'Refresh is restricted to the local application.')

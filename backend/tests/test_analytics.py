@@ -1,5 +1,6 @@
 """Synthetic calculation cases are explicitly test-only; never served by the app."""
 import copy
+import gzip
 import json
 import math
 import unittest
@@ -160,6 +161,25 @@ class CacheTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(status['using_cache'])
             self.assertIsNotNone(status['error'])
             self.assertEqual(json.loads(path.read_text(encoding='utf-8')),snapshot)
+
+    def test_bundled_snapshot_is_read_only_fallback(self):
+        with TemporaryDirectory() as directory:
+            cache=Path(directory)/'cache'
+            snapshot=Path(directory)/'snapshot'
+            cache.mkdir()
+            snapshot.mkdir()
+            bundled={'schema_version':1,'rows':synthetic(),'last_sync':'2026-09-27T00:00:00+00:00'}
+            with gzip.open(snapshot/'normalized.json.gz','wt',encoding='utf-8') as handle:
+                json.dump(bundled,handle)
+            settings=Settings(cache=cache,snapshot=snapshot)
+            self.assertFalse(settings.configured)
+            pipeline=Pipeline(settings)
+            self.assertEqual(pipeline.snapshot,bundled)
+            self.assertIsNone(pipeline.status()['error'])
+            self.assertTrue(pipeline.status()['using_cache'])
+            fresh={'schema_version':1,'rows':synthetic(),'last_sync':'2026-09-28T00:00:00+00:00'}
+            (cache/'normalized.json').write_text(json.dumps(fresh),encoding='utf-8')
+            self.assertEqual(Pipeline(settings).snapshot,fresh)
 
 
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,16 @@
+# Optional backend hosting. Review the provider's plan/cost before provisioning.
+# Serves the bundled read-only snapshot, so no BPS_API_KEY belongs on this host.
+services:
+  - type: web
+    name: bogor-agriculture-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /api/health
+    numInstances: 1
+    envVars:
+      - key: PUBLIC_DEPLOYMENT
+        value: 'true'
+      - key: ALLOWED_ORIGINS
+        sync: false
