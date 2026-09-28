@@ -12,5 +12,6 @@ node_modules/
 .next-pages/
 frontend/out/
 dist/
+frontend/public/data/snapshot.json.gz
 *.tsbuildinfo
 .local/

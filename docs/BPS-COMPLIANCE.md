@@ -30,3 +30,7 @@ Dataset statistik tidak diubah dalam pemeriksaan ini. URL publik hanya metadata 
 ## Kesimpulan terbatas
 
 Kekurangan pemberitahuan wajib dan tautan sumber pada aplikasi lokal sudah diperbaiki, dan perlindungan beban API diperkuat. Kepatuhan penuh tetap bergantung pada validitas serta kecocokan registrasi/token, tujuan penggunaan yang sebenarnya, perjanjian tambahan, perubahan ketentuan BPS, dan cara penerapan ketika dipublikasikan. Tidak ada kontak atau pengajuan ke BPS yang dilakukan oleh pemeriksaan ini.
+
+## Pembaruan: deployment GitHub Pages saja
+
+Situs publik kini mengunduh snapshot statistik yang disanitasi dari GitHub Pages, tanpa backend atau token. Pengunjung tidak dapat memicu permintaan BPS. Perhitungan browser diverifikasi terhadap Python; K-Means disiapkan saat build. Ketentuan pembatasan refresh sebelumnya tetap berlaku untuk pipeline lokal, bukan proses pengunjung situs.

@@ -1,81 +1,40 @@
-# Deploy dari GitHub
+# GitHub Pages saja
 
-Proyek mendukung GitHub Pages untuk frontend dan backend Python/Docker terpisah. GitHub Pages tidak menjalankan Python/FastAPI. Semua filter, analisis statistik, clustering, dan ekspor tetap menggunakan backend; tanpa backend, situs menampilkan kesalahan ketersediaan data, bukan data contoh.
+Situs ini sepenuhnya statis: tidak memerlukan Render, kartu, backend online, atau API key di GitHub. Tidak ada permintaan ke BPS saat pengunjung membuka situs.
 
-## 1. Upload kode
+## Publikasi
 
-Buat repositori GitHub lalu unggah isi proyek atau isi ZIP distribusi, dengan `.github`, `frontend`, `backend`, dan `render.yaml` berada di akar repositori. Gunakan cabang `main`. Jangan unggah folder proyek mentah lewat ZIP buatan sendiri yang menyertakan `.env`, `.local`, cache, atau virtualenv.
+1. Push proyek ke cabang `main` di GitHub.
+2. Repository → Settings → Pages → Source: **GitHub Actions**.
+3. Workflow **Deploy GitHub Pages** otomatis mengekspor snapshot, memeriksa hasil perhitungan, membangun frontend, dan menerbitkan situs.
+4. URL proyek ini: https://fx-cyber.github.io/bogor-agricultural-intelligence/
 
-Alternatif terminal, dari folder proyek ini (ganti URL dengan repositori Anda):
+Tidak ada repository variable atau secret yang diperlukan. `NEXT_PUBLIC_API_BASE_URL` tidak digunakan workflow. `basePath` otomatis mengikuti konfigurasi Pages.
 
-```powershell
-git init -b main
-git add .
-git status
-git commit -m "Prepare BPS analytics for GitHub Pages"
-git remote add origin https://github.com/USERNAME/REPOSITORY.git
-git push -u origin main
-```
+## Data dan perhitungan
 
-`.gitignore` mengecualikan rahasia, cache, dependensi, dan keluaran build. Periksa daftar file staged sebelum commit. Tidak ada token yang perlu disimpan sebagai GitHub Actions secret untuk workflow Pages ini.
+Input build adalah `backend/data/snapshot/normalized.json.gz`, snapshot publik yang sudah dibersihkan dari token dan metadata internal. `backend/scripts/export_pages.py` menghasilkan payload browser ringkas dan hasil K-Means per kombinasi tahun/satuan/kategori. File publik dihasilkan saat build, bukan mengambil data baru dari BPS.
 
-## 2. Deploy backend
+Semua filter, pencarian literal, urutan, pagination, CSV, total, YoY berpasangan, peringkat, tren panel lengkap, volatilitas, dan insight memakai observasi snapshot yang sama. K-Means memakai implementasi Python/scikit-learn asli saat build. Filter satu kecamatan atau satu komoditas tidak memenuhi syarat minimum cluster; aplikasi menampilkan ketidaktersediaan dengan jelas.
 
-Opsi siap pakai: buat Blueprint di Render dari repositori ini; `render.yaml` menggunakan `backend/Dockerfile`. Tinjau paket/biaya pada penyedia sebelum membuat layanan. Dockerfile juga dapat dijalankan pada hosting Docker lain.
+Tampilan memuat timestamp snapshot dan sumber tabel. Data tidak otomatis menjadi terbaru; untuk memperbarui, jalankan pipeline lokal sesuai README, ekspor ulang snapshot publik yang disanitasi, periksa datanya, lalu commit snapshot baru. Jangan commit `.env`, cache mentah, atau token BPS.
 
-Isi environment di hosting backend:
+Browser modern yang mendukung `DecompressionStream` diperlukan untuk memuat snapshot gzip. Data diunduh sekali per halaman dan semua interaksi berikutnya berlangsung lokal.
 
-| Nama | Nilai |
-| --- | --- |
-| `PUBLIC_DEPLOYMENT` | `true` (sudah menjadi default Dockerfile dan Blueprint) |
-| `ALLOWED_ORIGINS` | `https://USERNAME.github.io` tanpa path repositori; gunakan origin domain sendiri jika memakai custom domain |
-| `BPS_CACHE_DIR` | Opsional: direktori cache yang writable; default `/app/data/cache` di Docker |
-
-**Jangan menyetel `BPS_API_KEY` di hosting publik.** Image Docker menyertakan snapshot baca-saja `backend/data/snapshot/normalized.json.gz`, dan backend memakainya ketika cache kosong. Tanpa token, startup tidak melakukan panggilan BPS sama sekali, sehingga paket gratis ber-disk ephemeral tetap aman: restart maupun spin-down tidak memicu unduh ulang data. Token BPS hanya berada di mesin operator.
-
-`PORT` disediakan hosting atau default 8000. Jalankan satu worker dan satu instance. Request publik tidak dapat memicu refresh, termasuk tanpa header Origin. `/api/health` hanya menunjukkan server hidup, sedangkan `/api/bps/status` menunjukkan status data. Pastikan `tables_selected` lebih dari nol dan tidak ada error sebelum memakai situs.
-
-Snapshot diperbarui dari mesin operator, bukan dari server publik. Penyimpanan persisten tidak diperlukan selama backend berjalan tanpa token; bila Anda memang menyetel token, siapkan disk persisten yang dapat ditulis UID `appuser` agar restart tidak mengunduh ulang seluruh data, dan jangan menambah replica dengan token yang sama.
-
-Simpan URL HTTPS backend, misalnya `https://NAMA-API.onrender.com` (contoh saja). Backend harus memiliki TLS yang valid. CORS memakai origin frontend saja, bukan `/REPOSITORY`.
-
-## 3. Aktifkan GitHub Pages
-
-1. Repository → **Settings → Secrets and variables → Actions → Variables**.
-2. Tambahkan repository variable **`NEXT_PUBLIC_API_BASE_URL`** dengan URL HTTPS backend, tanpa slash di akhir. Ini URL publik, bukan token BPS.
-3. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-4. Buka **Actions → Deploy GitHub Pages → Run workflow**, atau push perubahan ke `main`.
-5. Buka URL dari hasil job `deploy`. Workflow menyesuaikan `basePath` dengan konfigurasi Pages, sehingga repositori project, situs `USERNAME.github.io`, dan custom domain mengikuti base path yang dilaporkan GitHub.
-
-Jika run awal gagal karena variable atau Pages belum disetel, selesaikan langkah di atas dan jalankan ulang. Jika mengganti URL backend, jalankan build/deploy ulang karena environment frontend ditanam saat build.
-
-## Pengujian lokal mode Pages
+## Uji lokal mode publik (PowerShell)
 
 ```powershell
+backend\.venv\Scripts\python backend\scripts\export_pages.py
+node --experimental-strip-types frontend/tests/static-analytics.mjs
 cd frontend
 $env:DEPLOY_TARGET = 'github-pages'
-$env:NEXT_PUBLIC_API_BASE_URL = 'https://URL-BACKEND-ANDA'
-$env:PAGES_BASE_PATH = '/NAMA-REPOSITORI'
+$env:PAGES_BASE_PATH = '/bogor-agricultural-intelligence'
 npm ci
 npm run build
 ```
 
-Keluaran statis ada di `frontend/.next-pages` sesuai `distDir` pada mode export, agar build lokal `.next` tidak terganggu. Untuk kembali ke mode lokal, hapus ketiga environment di atas dari shell, lalu jalankan frontend/backend sesuai README. `next start` digunakan untuk build lokal, bukan folder `.next-pages`.
+Hasil statis ada di `frontend/.next-pages`. Sajikan folder itu di subpath yang sama saat melakukan preview. Backend lokal lama tetap tersedia untuk pengembangan; mode tersebut tidak dipakai deployment Pages.
 
-## Pembaruan data dan ketentuan BPS
+## Ketentuan penggunaan
 
-Situs publik menampilkan snapshot dengan waktu akses; tidak mengaku live. Tombol refresh hanya tersedia pada mode lokal. Untuk memperbarui data publik, operator menyegarkan data di mesin sendiri lalu mengganti snapshot yang dibundel:
-
-```powershell
-# setelah refresh lokal sukses menghasilkan backend/data/cache/normalized.json
-gzip -9 -c backend/data/cache/normalized.json > backend/data/snapshot/normalized.json.gz
-git add backend/data/snapshot/normalized.json.gz
-git commit -m "Update BPS data snapshot"
-git push
-```
-
-Deploy ulang backend saja; frontend tidak perlu dibangun ulang karena URL backend tidak berubah. Jangan restart berulang untuk menghindari pembatasan BPS. Rilis ini tidak memasang scheduler otomatis.
-
-Pendaftaran/URL aplikasi BPS harus sesuai deployment. Jangan membuat token BPS sebagai variable `NEXT_PUBLIC_*`, memasukkannya ke GitHub, atau membagikannya ke pengunjung. Cek [pemeriksaan ketentuan](BPS-COMPLIANCE.md); lingkup yang disiapkan tetap nonkomersial.
-
-Rujukan: [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [Next.js deployment](https://nextjs.org/docs/pages/getting-started/deploying), [Render persistent disks](https://render.com/docs/disks).
+Pemberitahuan API, kredit BPS, tanggal akses, tautan sumber, dan penegasan aplikasi independen tetap tampil. Tidak ada token atau kredensial di file publik. Lingkup tetap riset/portofolio nonkomersial; lihat BPS-COMPLIANCE.md. File Docker hanya opsi pengembangan lama, bukan persyaratan publikasi.

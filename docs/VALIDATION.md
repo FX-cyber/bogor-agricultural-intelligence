@@ -44,3 +44,7 @@ The app is configured for a single local process, not a publicly authenticated s
 - Pages export rebuilt with a dummy HTTPS origin: all five routes present, assets repo-prefixed, mandatory BPS notice on every page, no `Refresh data` control in the emitted HTML.
 - The export still contains the literal `BPS_API_KEY` inside an operator-facing UI message that is guarded off whenever a remote backend origin is configured. No value assignment and no token appears in any chunk.
 - Docker image build, Render runtime and the live GitHub Pages deployment remain unverified; no Docker engine is installed here.
+
+### GitHub-only release
+
+Static export succeeds without API origin or backend. Eighty Python/browser parity cases pass for total, YoY, rankings and annual series. CSV filtering/escaping, missing-value behavior, citation preservation, and cluster eligibility pass. Build produces a 164,911-byte gzip payload for 30,120 observations and 63 precomputed cluster combinations. Local static preview verifies 2025/kw dashboard and seasonal filter (1,613,601 kw, Ketimun), without an API server. Export scanned against locally configured BPS token: no matches.

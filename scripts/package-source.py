@@ -4,11 +4,11 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRS = ('.github', 'frontend/app', 'frontend/components', 'frontend/lib',
-        'frontend/public', 'backend/app', 'backend/scripts', 'backend/tests',
+        'frontend/public', 'frontend/tests', 'backend/app', 'backend/scripts', 'backend/tests',
         'docs', 'scripts')
 FILES = ('.gitignore', 'README.md', 'render.yaml', 'backend/Dockerfile',
          'backend/.dockerignore', 'backend/.env.example', 'backend/requirements.txt',
-         'backend/requirements.lock.txt', 'backend/README.md', 'backend/data/cache/.gitkeep',
+         'backend/requirements.lock.txt', 'backend/README.md', 'backend/data/cache/.gitkeep', 'backend/data/snapshot/normalized.json.gz',
          'frontend/.env.example', 'frontend/package.json', 'frontend/package-lock.json',
          'frontend/next.config.ts', 'frontend/next-env.d.ts', 'frontend/tsconfig.json',
          'frontend/postcss.config.mjs')

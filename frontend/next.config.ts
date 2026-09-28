@@ -1,10 +1,7 @@
 import type { NextConfig } from 'next';
 const pages = process.env.DEPLOY_TARGET === 'github-pages';
-const apiOrigin = process.env.NEXT_PUBLIC_API_BASE_URL;
-if (pages && (!apiOrigin || !/^https:\/\/[^/]+$/.test(apiOrigin))) {
-  throw new Error('GitHub Pages requires NEXT_PUBLIC_API_BASE_URL: an HTTPS backend origin without a trailing slash.');
-}
 const config: NextConfig = pages ? {
+  env: { NEXT_PUBLIC_STATIC_MODE: 'true', NEXT_PUBLIC_BASE_PATH: process.env.PAGES_BASE_PATH || '' },
   output: 'export',
   distDir: '.next-pages',
   trailingSlash: true,

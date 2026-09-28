@@ -2,9 +2,12 @@
 
 **Data-driven agricultural intelligence for Kabupaten Bogor**
 
-**Deploy dari GitHub:** frontend sudah mendukung GitHub Pages melalui GitHub Actions;
-backend Python disiapkan sebagai Docker service terpisah. Ikuti
-[panduan deployment](docs/DEPLOY-GITHUB.md). GitHub Pages sendiri tidak menjalankan backend Python.
+**Website publik berjalan sepenuhnya di GitHub Pages**, tanpa Render, kartu pembayaran,
+backend online, atau token di browser. GitHub Actions mengolah snapshot BPS saat build;
+filter, ringkasan, insight, grafik, dan CSV berjalan di browser. K-Means diprakomputasi
+per tahun/satuan/kategori. Ikuti [panduan deployment](docs/DEPLOY-GITHUB.md).
+
+Bagian backend di bawah tetap tersedia untuk memperbarui data secara lokal; tidak dibutuhkan pengunjung situs.
 
 ## 1. Project Overview
 

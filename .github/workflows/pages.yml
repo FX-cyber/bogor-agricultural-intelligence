@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DEPLOY_TARGET: github-pages
-      NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,11 +31,15 @@ jobs:
       - name: Test backend without BPS credentials
         working-directory: backend
         run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Prepare public snapshot and precomputed clusters (offline)
+        run: python backend/scripts/export_pages.py
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
         working-directory: frontend
+      - name: Verify browser calculations against Python
+        run: node --experimental-strip-types frontend/tests/static-analytics.mjs
       - name: Export static frontend
         working-directory: frontend
         env:
@@ -49,6 +52,7 @@ jobs:
           test -f frontend/.next-pages/sources/index.html
           test -f frontend/.next-pages/diagnostics/index.html
           test -f frontend/.next-pages/about/index.html
+          test -f frontend/.next-pages/data/snapshot.json.gz
           touch frontend/.next-pages/.nojekyll
       - uses: actions/upload-pages-artifact@v4
         with:
